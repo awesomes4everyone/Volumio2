@@ -48,7 +48,7 @@ function PluginManager(ccommand, server) {
 
 	self.configurationFolder = '/data/configuration/';
 
-	var archraw = execSync('/usr/bin/dpkg --print-architecture', { encoding: 'utf8' });
+	var archraw = execSync('/usr/bin/uname -m', { encoding: 'utf8' });
 	arch = archraw.replace(/(\r\n|\n|\r)/gm,"")
 
 	var file = fs.readFileSync('/etc/os-release').toString().split('\n');

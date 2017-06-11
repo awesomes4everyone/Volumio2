@@ -211,7 +211,7 @@ ControllerI2s.prototype.i2cDetect = function () {
 	function readI2S(i2cbus) {
 	try {
 	var i2cAddr = '';
-	var cmd = '/usr/bin/sudo /usr/sbin/i2cdetect -y ' + i2cbus;
+	var cmd = '/usr/sbin/i2cdetect -y ' + i2cbus;
 	exec(cmd, function(err, stdout, stderr) {
 		if(err) {
 			self.logger.info('Cannot read I2C interface or I2C interface not present'+err);
@@ -387,7 +387,7 @@ ControllerI2s.prototype.enableI2SDAC = function (data) {
 		{ var num = k;
 
 			for (var i = 0; i < dacdata.devices[num].data.length; i++) {
-			
+
 				if(dacdata.devices[num].data[i].name === outdevicename) {
 
 					var dac = dacdata.devices[num].data[i];
@@ -402,8 +402,8 @@ ControllerI2s.prototype.enableI2SDAC = function (data) {
 						this.config.set("i2s_id", id);
 						self.writeModulesFile(modules);
 					} else {
-						self.revomeAllDtOverlays();
-						self.writeI2SDAC(overlay);
+						self.removeAllDtOverlays();
+						//self.writeI2SDAC(overlay);
 						if (script){
 							self.hotAddI2SDAC({'overlay':overlay,'script':script});
 						} else {
@@ -437,32 +437,30 @@ ControllerI2s.prototype.enableI2SDAC = function (data) {
 	return defer.promise;
 };
 
-ControllerI2s.prototype.writeI2SDAC = function (data) {
+/*ControllerI2s.prototype.writeI2SDAC = function (data) {
 	var self = this;
 	var bootstring = 'dtoverlay='+ data + os.EOL;
 	var searchexp = new RegExp(i2sOverlayBanner + 'dtoverlay=.*' + os.EOL);
-	
+
 	fs.readFile('/boot/config.txt', 'utf8', function (err,configTxt) {
   		if (err) {
 			self.logger.error('Cannot read config.txt file: '+err);
   		}
   		else {
   			var newConfigTxt;
-  		
   			newConfigTxt = configTxt.replace(searchexp,i2sOverlayBanner + bootstring);
-
   			if (configTxt == newConfigTxt) {
   			// there was no pre-existing Volumio i2S DAC in config.txt => appending new entry 
   				newConfigTxt = configTxt + os.EOL + i2sOverlayBanner + bootstring + os.EOL;
- 			}			
+ 			}
 
   			fs.writeFile('/boot/config.txt', newConfigTxt, 'utf8', function (err) {
 				if (err) self.logger.error('Cannot write config.txt file: '+err);
   			});
-  		}	
+  		}
 	});
 
-};
+};*/
 
 ControllerI2s.prototype.disableI2SDAC = function () {
 	var self = this;
@@ -476,20 +474,20 @@ ControllerI2s.prototype.disableI2SDAC = function () {
   		}
   		else {
   			configTxt = configTxt.replace(searchexp,os.EOL);
-  			
+
   			fs.writeFile('/boot/config.txt', configTxt, 'utf8', function (err) {
 				if (err) self.logger.error('Cannot write config.txt file: '+err);
   			});
-  			
-  			self.revomeAllDtOverlays();
-  		}	
+
+  			self.removeAllDtOverlays();
+  		}
 	});
 };
 
 
 ControllerI2s.prototype.forceConfigTxtBannerCompat = function () {
 	var self = this;
-	
+
 	fs.readFile('/boot/config.txt', 'utf8', function (err,configTxt) {
   		if (err) {
 			self.logger.error('Cannot read config.txt file: '+err);
@@ -554,7 +552,7 @@ ControllerI2s.prototype.hotAddI2SDAC = function (data) {
 
 
 	function dtcommand(parameter) {
-	exec('/usr/bin/sudo /usr/bin/dtoverlay '+parameter,{uid:1000, gid:1000}, function(err, stdout, stderr) {
+	exec('/usr/bin/dtoverlay '+parameter, {uid:1000, gid:1000}, function(err, stdout, stderr) {
 		if(err) {
 			self.logger.error('Cannot enable I2S Param: '+err);
 		} else {
@@ -569,12 +567,12 @@ ControllerI2s.prototype.hotAddI2SDAC = function (data) {
 ControllerI2s.prototype.hotRemoveI2SDAC = function () {
 };
 
-ControllerI2s.prototype.revomeAllDtOverlays = function () {
+ControllerI2s.prototype.removeAllDtOverlays = function () {
 	var self = this;
 
 	var defer = libQ.defer();
 	try {
-		var overlaysRaw = execSync("/usr/bin/sudo /usr/bin/dtoverlay -l", { uid: 1000, gid: 1000, encoding: 'utf8', timeout: 5000 });
+		var overlaysRaw = execSync("/usr/bin/dtoverlay -l", { encoding: 'utf8', timeout: 5000 });
 		var overlaysLine = overlaysRaw.split('\n');
 	} catch(e) {
 		self.logger.info('Cannot Remove all dtoverlays');

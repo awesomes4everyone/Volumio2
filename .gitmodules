@@ -1,4 +1,8 @@
+[submodule "Volumio2-UI"]
+	path = http/www
+	url = https://github.com/awesomes4everyone/Volumio2-UI
+	branch = dist
 [submodule "http/www"]
 	path = http/www
-	url = https://github.com/volumio/Volumio2-UI
+	url = https://github.com/awesomes4everyone/Volumio2-UI
 	branch = dist

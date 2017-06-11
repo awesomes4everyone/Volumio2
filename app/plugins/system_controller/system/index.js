@@ -44,7 +44,7 @@ ControllerSystem.prototype.onVolumioStart = function () {
 	this.commandRouter.sharedVars.addConfigValue('system.name', 'string', self.config.get('playerName'));
 
 	self.deviceDetect();
-	self.callHome();
+	//self.callHome();
 
     return libQ.resolve();
 };

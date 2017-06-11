@@ -97,7 +97,7 @@ CommandLineClient.prototype.writeVolumeFiles = function (path , content) {
 		ws.uncork();
 		ws.end();
 		//execSync('/bin/chmod a+x ' + path, {uid: 1000, gid: 1000})
-		execSync('/bin/chmod a+x " + path);
+		execSync('/bin/chmod a+x ' + path);
 	} catch (e) {
 		console.log(e)
 	}

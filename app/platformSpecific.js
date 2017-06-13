@@ -50,7 +50,8 @@ PlatformSpecific.prototype.networkRestart = function () {
 
 PlatformSpecific.prototype.wirelessRestart = function () {
 	var self = this;
-	exec("sudo /bin/systemctl restart wireless.service", function (error, stdout, stderr) {
+	//exec("sudo /bin/systemctl restart wireless.service", function (error, stdout, stderr) {
+	exec("sudo /etc/init.d/S96wireless restart", function ( error, stdout, stderr) {
 		if (error !== null) {
 			self.coreCommand.pushToastMessage('error',self.coreCommand.getI18nString('NETWORK.WIRELESS_RESTART_TITLE'),
                 self.coreCommand.getI18nString('NETWORK.WIRELESS_RESTART_ERROR')+error);

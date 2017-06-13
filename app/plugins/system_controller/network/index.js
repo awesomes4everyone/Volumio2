@@ -540,7 +540,7 @@ ControllerNetwork.prototype.saveWirelessNetworkSettings = function (data) {
 	self.commandRouter.pushToastMessage('success', self.commandRouter.getI18nString('NETWORK.WIRELESS_RESTART_TITLE'), self.commandRouter.getI18nString('NETWORK.WIRELESS_RESTART_SUCCESS'));
 	fs.writeFile('/data/configuration/netconfigured', ' ', function (err) {
 		if (err) {
-			self.logger.error('Cannot write netconfigured '+error);
+			self.logger.error('Cannot write netconfigured '+err);
 		}
 	});
 };
@@ -698,9 +698,9 @@ ControllerNetwork.prototype.wirelessConnect = function (data) {
         index++;
     }
 
-	fs.writeFile('/etc/wpa_supplicant/wpa_supplicant.conf', netstring, function (err) {
+	fs.writeFile('/etc/wpa_supplicant.conf', netstring, function (err) {
 		if (err) {
-			self.logger.error('Cannot write wpasupplicant.conf '+error);
+			self.logger.error('Cannot write wpasupplicant.conf '+err);
 		}
 
 		self.commandRouter.wirelessRestart();
